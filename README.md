@@ -25,6 +25,9 @@ The user will be able to utilize Insomnia Core via API's in order to view and up
 
 The application can be accessed by starting your server on port 3001 and testing via Insomnia Core.
 
+View the below video for walkthrough on testing:
+https://drive.google.com/file/d/1pTOGZTWtP8lJRYf496biSHidpuQW0Dm7/view
+
 ## Contribution Guidelines
 
 The repo for this project is publicly available and open for contributions.
