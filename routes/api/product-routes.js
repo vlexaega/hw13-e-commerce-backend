@@ -45,22 +45,43 @@ router.post("/", (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
+  let createdProduct; // Variable to store the created product
+
   Product.create(req.body)
     .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
+      createdProduct = product; // Store the created product for later use
+
+      // If there are product tags, create pairings to bulk create in the ProductTag model
+      if (req.body.tagIds && req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
           return {
             product_id: product.id,
             tag_id,
           };
         });
+
         return ProductTag.bulkCreate(productTagIdArr);
       }
-      // if no product tags, just respond
-      res.status(200).json(product);
     })
-    .then((productTagIds) => res.status(200).json(productTagIds))
+    .then(() => {
+      // Update the created product with any updated fields
+      if (req.body.product_name) {
+        createdProduct.product_name = req.body.product_name;
+      }
+      if (req.body.price) {
+        createdProduct.price = req.body.price;
+      }
+      if (req.body.stock) {
+        createdProduct.stock = req.body.stock;
+      }
+
+      // Save the updated product
+      return createdProduct.save();
+    })
+    .then((updatedProduct) => {
+      // Return the updated product as JSON
+      res.status(200).json(updatedProduct);
+    })
     .catch((err) => {
       console.log(err);
       res.status(400).json(err);
